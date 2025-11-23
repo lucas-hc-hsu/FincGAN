@@ -23,11 +23,9 @@ import sys
 
 parser = argparse.ArgumentParser(description='Training GNN on ogbn-products benchmark')
 parser.add_argument('--gpu_id', type=int, default=0)
-# parser.add_argument('--seed', type=int, default=0)
 parser.add_argument('--seed', nargs="+", type=int, default=[0, 30])
 parser.add_argument('--data_dir', type=str, default="graph/music_instrument_25.bin", help="directory of original grpah data")
 parser.add_argument('--graph_dir', type=str, default="graph/", help="directory to save generated graph during training")
-# parser.add_argument('--out_dir', type=str, default="model/")
 parser.add_argument('--tmp_dir', type=str, default="tmp/")
 parser.add_argument('--emb_dir', type=str, default="embed/")
 parser.add_argument('--target', type=str, default='user')
@@ -39,14 +37,11 @@ parser.add_argument('--setting', type=str, default="origin",choices=['origin', '
 parser.add_argument('--up', type=float, default=0.99, help="threshold of user-product edge generator")
 parser.add_argument('--uu', type=float, default=0.91, help="threshold of user-user edge genertor")
 parser.add_argument('--k', type=int, default=1)
-# parser.add_argument('--ratio', type=float, default=0.5)
-parser.add_argument('--ratio', nargs='+', type=float, default=[0.1007, 0.17, 0.23, 0.29, 0.34, 0.375, 0.41, 0.45, 0.47, 0.5, 0.52, 0.55]) # for test different threshold
+parser.add_argument('--ratio', nargs='+', type=float, default=[0.1007, 0.17, 0.23, 0.29, 0.34, 0.375, 0.41, 0.45, 0.47, 0.5, 0.52, 0.55])
 parser.add_argument('--verbose', type=int, default=0, help="set 1 to show training details as generating new graph, otherwise 0")
 parser.add_argument('--result_dir', type=str, default="results/", help="directory to save training result of each method during training")
 
-''' Use one of the following two lines when parser throws error '''
 args = parser.parse_args()
-# args = parser.parse_args(args = [])
 
 # Setup logger
 logger = get_logger('FincGAN.train', level=logging.DEBUG if args.verbose else logging.INFO)
@@ -176,13 +171,7 @@ for j in range(len(args.ratio)):
         torch.manual_seed(seed)
 
 
-        # %%
-#         device = torch.device("cuda:{}".format(args.gpu_id))
         [G], _ = load_graphs(args.data_dir)
-        # [G], _ = load_graphs("./graph/"+'music_graphsmote_0.5.bin')
-        # [G], _ = load_graphs("./graph/"+'music_graphsmote_0.5_pretrained.bin')
-        # [G], _ = load_graphs("./graph/"+'music_gan_0.5.bin')
-        # [G], _ = load_graphs("./graph/"+'music_gan_0.5_pretrained.bin')
 
         # Move graph to the same device as the model
         if cuda:
@@ -283,11 +272,8 @@ for j in range(len(args.ratio)):
             emb = G.nodes[ntype].data.pop('feature')
             emb = nn.Parameter(emb[:, use_idx], requires_grad = False)
             G.nodes[ntype].data['inp'] = emb
-        # Keep graph on CPU for DGL CPU version, only move tensors to GPU
-        # G = G.to(device)
 
 
-        # %%
         n_inp = 256 if args.setting in ['noise', "gan", "graphsmote"] else 23
         n_hid = 512 if args.setting in ['noise', "gan", "graphsmote"] else 256
 
@@ -299,36 +285,17 @@ for j in range(len(args.ratio)):
                     n_layers=2,
                     n_heads=4,
                     use_norm = True).to(device)
-        # model.load_state_dict(torch.load(args.out_dir + 'music_hgt_model_pretrained.pt'))
         optimizer = torch.optim.AdamW(model.parameters())
         scheduler = torch.optim.lr_scheduler.OneCycleLR(optimizer, total_steps=args.n_epoch, max_lr = args.max_lr)
         if args.verbose:
             logger.debug('Training HGT with #param: %d' % (get_n_params(model)))
 
-
-        # logistic
-        # x = G.nodes['user'].data['inp']
-        # x = x.cpu().numpy()
-        # y = labels.cpu().numpy()
-
-        # regr = linear_model.LogisticRegression(max_iter = 5000)
-        # regr.fit(x[train_idx], y[train_idx])
-        # y_pred = regr.predict(x[test_idx])
-
-        # print("AUC: {:.4f}".format(roc_auc_score(y[test_idx], y_pred)))
-        # print("Precision: {:.4f}".format(precision_score(y[test_idx], y_pred, average='binary')))
-        # print("Recall: {:.4f}".format(recall_score(y[test_idx], y_pred, average='binary')))
-
-
-        # %%
         if args.verbose:
             logger.debug('='*70)
             logger.debug('Training HGT with #param: %d' % (get_n_params(model)))
             logger.debug('='*70)
         train(model, G)
 
-
-        # %%
         if args.verbose:
             logger.debug('='*70)
             logger.debug('Testing')
@@ -362,7 +329,6 @@ for j in range(len(args.ratio)):
 
 
         f = open(args.result_dir + "music_hgt_model_" + args.setting + ".txt", "a")
-        # f.write(",".join([args.setting, str(seed), str(percent[j]), str(prc), str(roc), str(f1), str(precision), str(rc), str(accuracy)])+'\n')
         f.write("{},{},{:.4f},{:.4f},{:.4f},{:.4f},{:.4f},{:.4f},{:.4f}\n".format(args.setting, seed, percent[j], prc, roc, f1, precision, rc, accuracy))
         f.close()
 
