@@ -1,0 +1,11 @@
+name: fincgan
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip
+  - numpy
+  - matplotlib
+  - pandas
+  - scikit-learn
+  - tqdm

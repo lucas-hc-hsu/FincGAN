@@ -1,0 +1,135 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyTorch Models and Checkpoints
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.safetensors
+
+# Generated Data and Outputs
+tmp/
+embed/
+generator/
+tsne/
+figures/
+results/
+graph_output/
+test_graphs/
+
+# Large Data Files
+data/
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+*.ipynb_checkpoints
+
+# IDE and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Claude Code
+.claude/
+
+# Environment
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Logs and Databases
+*.log
+logs/
+*.sql
+*.sqlite
+*.db
+
+# Backup files
+*.backup
+*.bak
+*.old
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.lnk
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+*.csv~
+
+# Documentation builds
+docs/_build/
+site/
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Profiling data
+*.prof
+
+# Experiment tracking
+wandb/
+mlruns/
+runs/
+
+# Custom
+*.csv
+!requirements.txt
+
+# Archive folder
+archive/
