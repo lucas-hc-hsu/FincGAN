@@ -354,38 +354,6 @@ done
 
 ---
 
-## Workflow Verification Checklist
-
-Use this checklist to verify each stage:
-
-- [ ] **Stage I Complete**
-  - [ ] `embed/music_hgt_user_emb.pt` exists
-  - [ ] `embed/music_hgt_product_emb.pt` exists
-  - [ ] Embeddings have correct shape: (7017, 256) and (4684, 256)
-
-- [ ] **Stage II Complete**
-  - [ ] `generator/music_D.pt` exists
-  - [ ] `generator/music_G.pt` exists
-  - [ ] `tsne/*.jpg` files generated (6 files)
-  - [ ] t-SNE plots show good distribution overlap
-
-- [ ] **Stage III Complete**
-  - [ ] `generator/uu_generator.pt` exists
-  - [ ] `generator/up_generator.pt` exists
-  - [ ] Both generators can be loaded without errors
-
-- [ ] **Stage IV Complete**
-  - [ ] `graph_output/music_instrument_gan_*.bin` exists
-  - [ ] `results/music_hgt_model_gan.txt` exists
-  - [ ] Results show reasonable metrics (AUC-ROC > 0.80)
-
-- [ ] **Stage V Complete**
-  - [ ] `figures/figure_3.png` exists
-  - [ ] Plot shows comparison across methods
-  - [ ] FincGAN performance is competitive with baselines
-
----
-
 ## Directory Structure After Completion
 
 ```
