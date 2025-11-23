@@ -89,6 +89,7 @@ Stage V: Visualization & Analysis
 5. [Stage V: Visualization](docs/stage5-visualization.md)
 
 ### Resources
+- [Project Structure](docs/project-structure.md)
 - [Troubleshooting](docs/troubleshooting.md)
 
 ---
@@ -97,69 +98,18 @@ Stage V: Visualization & Analysis
 
 ```
 fincgan/
-├── README.md                    # Project documentation
-├── LICENSE                      # License file
-│
-├── fincgan/                     # Python source code package
-│   ├── __init__.py             # Package initialization
-│   ├── train.py                # Main training script
-│   ├── hgt_model.py            # HGT model implementation
-│   ├── node_generator.py       # GAN training for node generation
-│   ├── edge_generator_uu.py    # User-User edge generator
-│   ├── edge_generator_up.py    # User-Product edge generator
-│   ├── graph_generator.py      # Graph generation
-│   ├── utils.py                # Utility functions
-│   ├── visualize.py            # Visualization tools
-│   └── logger.py               # Logging utilities
-│
-├── scripts/                     # Automation and configuration
-│   ├── run_fincgan_amazon.sh   # Automated pipeline for Amazon dataset
-│   ├── run_fincgan_yelp.sh     # Automated pipeline for Yelp dataset
-│   ├── setup_env.sh            # CPU environment setup
-│   ├── setup_env_gpu.sh        # GPU environment setup
-│   ├── environment.yml         # CPU dependencies
-│   └── environment-gpu.yml     # GPU dependencies
-│
-├── docs/                        # Documentation
-│   ├── installation.md
-│   ├── workflow.md
-│   ├── stage1-embedding.md
-│   ├── stage2-node-generator.md
-│   ├── stage3-edge-generator.md
-│   ├── stage4-training.md
-│   ├── stage5-visualization.md
-│   └── troubleshooting.md
-│
-├── data/                        # Input data directory
-├── graph/                       # Original graph data
-│   ├── amazon.bin              # Amazon dataset
-│   └── yelp.bin                # Yelp dataset
-├── images/                      # Images for documentation
-│
-└── (Output directories - generated during training)
-    ├── embed/                   # Node embeddings
-    │   ├── amazon/             # Amazon embeddings
-    │   └── yelp/               # Yelp embeddings
-    ├── generator/               # GAN generators
-    │   ├── amazon/             # Amazon generators
-    │   └── yelp/               # Yelp generators
-    ├── graph_output/            # Generated graphs
-    │   ├── amazon/             # Amazon graphs
-    │   └── yelp/               # Yelp graphs
-    ├── results/                 # Training results
-    │   ├── amazon/             # Amazon results
-    │   └── yelp/               # Yelp results
-    ├── figures/                 # Visualization outputs
-    │   ├── amazon/             # Amazon visualizations
-    │   └── yelp/               # Yelp visualizations
-    ├── tsne/                    # t-SNE visualizations
-    │   ├── amazon/             # Amazon t-SNE plots
-    │   └── yelp/               # Yelp t-SNE plots
-    ├── tmp/                     # Temporary files
-    │   ├── amazon/             # Amazon temp files
-    │   └── yelp/               # Yelp temp files
-    └── logs/                    # Training logs
+├── fincgan/         # Python source code (train.py, models, generators)
+├── scripts/         # Automation scripts (run_fincgan_*.sh, setup_env*.sh)
+├── docs/            # Documentation
+├── graph/           # Input datasets (amazon.bin, yelp.bin)
+└── Output directories (generated during training):
+    ├── embed/       # Node embeddings (amazon/, yelp/)
+    ├── generator/   # GAN models (amazon/, yelp/)
+    ├── results/     # Training metrics (amazon/, yelp/)
+    └── figures/     # Visualizations (amazon/, yelp/)
 ```
+
+**[View complete project structure →](docs/project-structure.md)**
 
 ---
 
@@ -184,4 +134,5 @@ If you find this repository useful, please cite FincGAN with the following:
 
 - [Installation →](docs/installation.md)
 - [Complete Workflow →](docs/workflow.md)
+- [Project Structure →](docs/project-structure.md)
 - [Troubleshooting →](docs/troubleshooting.md)
