@@ -16,8 +16,8 @@ import os
 import torch
 
 
-from hgt_model import HGT, Generator, Decoder, adj_loss, latent_dim, emb_dim
-from logger import get_logger
+from fincgan.hgt_model import HGT, Generator, Decoder, adj_loss, latent_dim, emb_dim
+from fincgan.logger import get_logger
 import argparse
 from dgl.data.utils import load_graphs
 

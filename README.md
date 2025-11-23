@@ -10,16 +10,16 @@ FincGAN is a fraud detection framework combining Graph Neural Networks (GNN) and
 
 ```bash
 # Make script executable
-chmod +x run_fincgan.sh
+chmod +x scripts/run_fincgan.sh
 
 # Run complete pipeline
-./run_fincgan.sh
+./scripts/run_fincgan.sh
 
 # Quick test (5-10 minutes)
-./run_fincgan.sh --n-epoch-emb 5 --n-epoch-gan 2 --n-epoch-uu 10 --n-epoch-up 5 --n-epoch-train 10
+./scripts/run_fincgan.sh --n-epoch-emb 5 --n-epoch-gan 2 --n-epoch-uu 10 --n-epoch-up 5 --n-epoch-train 10
 
 # View all options
-./run_fincgan.sh --help
+./scripts/run_fincgan.sh --help
 ```
 
 **For manual step-by-step execution, see [Complete Workflow](docs/workflow.md).**
@@ -32,16 +32,16 @@ chmod +x run_fincgan.sh
 
 ```bash
 # Run setup script (one command to install everything)
-chmod +x setup_env.sh
-./setup_env.sh
+chmod +x scripts/setup_env.sh
+./scripts/setup_env.sh
 ```
 
 ### GPU Version (PyTorch 2.6.0 + CUDA 12.4) - For RTX 5090 and newer GPUs
 
 ```bash
 # Run GPU setup script
-chmod +x setup_env_gpu.sh
-./setup_env_gpu.sh
+chmod +x scripts/setup_env_gpu.sh
+./scripts/setup_env_gpu.sh
 ```
 
 **Note**: The GPU version requires NVIDIA driver 550+ and supports newer GPUs like RTX 5090.

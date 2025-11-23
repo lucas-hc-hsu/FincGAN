@@ -324,7 +324,7 @@ stage_embedding() {
     print_stage "I" "Feature Extraction"
     print_info "Training HGT model to extract node embeddings..."
 
-    run_cmd python3 train.py \
+    run_cmd python3 -m fincgan.train \
         --gpu_id "$GPU_ID" \
         --n_epoch "$N_EPOCH_EMBEDDING" \
         --seed "$SEED_START" "$SEED_END" \
@@ -353,7 +353,7 @@ stage_node_generator() {
     print_stage "II" "Node Generator (GAN) Training"
     print_info "Training GAN to generate synthetic user nodes..."
 
-    run_cmd python3 node_generator.py \
+    run_cmd python3 -m fincgan.node_generator \
         --gpu_id "$GPU_ID" \
         --n_epochs "$N_EPOCH_GAN" \
         --gan_dir "generator/" \
@@ -385,7 +385,7 @@ stage_edge_generators() {
 
     # User-User Edge Generator
     print_info "Training User-User edge generator..."
-    run_cmd python3 edge_generator_uu.py \
+    run_cmd python3 -m fincgan.edge_generator_uu \
         --gpu_id "$GPU_ID" \
         --n_epoch "$N_EPOCH_UU" \
         --edge_dir "generator/" \
@@ -399,7 +399,7 @@ stage_edge_generators() {
 
     # User-Product Edge Generator
     print_info "Training User-Product edge generator..."
-    run_cmd python3 edge_generator_up.py \
+    run_cmd python3 -m fincgan.edge_generator_up \
         --gpu_id "$GPU_ID" \
         --n_epoch "$N_EPOCH_UP" \
         --edge_dir "generator/" \
@@ -424,7 +424,7 @@ stage_graph_generation() {
     print_stage "IV" "Graph Generation and Training"
     print_info "Generating augmented graph using FincGAN..."
 
-    run_cmd python3 graph_generator.py \
+    run_cmd python3 -m fincgan.graph_generator \
         --ratio "$RATIO" \
         --up "$UP_THRESHOLD" \
         --uu "$UU_THRESHOLD" \
@@ -434,7 +434,7 @@ stage_graph_generation() {
     print_success "Graph generated successfully"
 
     print_info "Training HGT model on augmented graph..."
-    run_cmd python3 train.py \
+    run_cmd python3 -m fincgan.train \
         --gpu_id "$GPU_ID" \
         --n_epoch "$N_EPOCH_TRAIN" \
         --seed "$SEED_START" "$SEED_END" \
@@ -457,7 +457,7 @@ stage_visualization() {
     print_stage "V" "Result Visualization"
     print_info "Generating result visualizations..."
 
-    run_cmd python3 -c "from visualize import auto_plot_figure_3; auto_plot_figure_3(result_dir='$RESULT_DIR', save_fig=True)"
+    run_cmd python3 -c "from fincgan.visualize import auto_plot_figure_3; auto_plot_figure_3(result_dir='$RESULT_DIR', save_fig=True)"
 
     if [ -f "figures/figure_3.png" ]; then
         print_success "Stage V completed - Visualization saved to figures/figure_3.png"

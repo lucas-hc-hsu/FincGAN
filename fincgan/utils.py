@@ -1,5 +1,5 @@
-from hgt_model import HGT, Generator, latent_dim, emb_dim
-from logger import get_logger
+from fincgan.hgt_model import HGT, Generator, latent_dim, emb_dim
+from fincgan.logger import get_logger
 import random
 import torch
 from torch.autograd import Variable

@@ -16,8 +16,8 @@ import os
 import torch
 
 
-from hgt_model import HGT, Generator, MLP, latent_dim, emb_dim
-from logger import get_logger
+from fincgan.hgt_model import HGT, Generator, MLP, latent_dim, emb_dim
+from fincgan.logger import get_logger
 import random
 import argparse
 from tqdm import tqdm

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import glob
 import os
-from logger import get_logger
+from fincgan.logger import get_logger
 
 def auto_plot_figure_3(result_dir = 'results/', save_fig=True):
     fig = plt.figure(figsize=(24, 16))

@@ -32,7 +32,7 @@ from torchvision.utils import save_image
 
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
-from logger import get_logger
+from fincgan.logger import get_logger
 
 import torch.nn as nn
 import torch.nn.functional as F

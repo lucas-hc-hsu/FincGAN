@@ -8,8 +8,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from hgt_model import HGT, Generator, latent_dim, emb_dim
-from logger import get_logger
+from fincgan.hgt_model import HGT, Generator, latent_dim, emb_dim
+from fincgan.logger import get_logger
 import argparse
 import logging
 
@@ -17,7 +17,7 @@ import numpy as np
 from sklearn.metrics import roc_auc_score, precision_score, recall_score, f1_score, precision_recall_curve, auc
 from dgl.data.utils import load_graphs, save_graphs
 
-import utils
+from fincgan import utils
 import sys
 
 
