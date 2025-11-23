@@ -236,15 +236,25 @@ check_environment() {
         exit 1
     fi
 
-    # Try to activate conda environment
-    if [ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]; then
-        source "$HOME/miniconda3/etc/profile.d/conda.sh"
-        if conda env list | grep -q "fincgan"; then
-            print_info "Activating fincgan conda environment..."
-            conda activate fincgan
-            print_success "Environment activated"
-        else
-            print_warning "fincgan environment not found, using current environment"
+    # Check if conda environment is already activated
+    if [ ! -z "$CONDA_DEFAULT_ENV" ]; then
+        print_info "Using active conda environment: $CONDA_DEFAULT_ENV"
+    else
+        # Try to activate conda environment
+        if [ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]; then
+            source "$HOME/miniconda3/etc/profile.d/conda.sh"
+            # Try fincgan-gpu first, fall back to fincgan
+            if conda env list | grep -q "fincgan-gpu"; then
+                print_info "Activating fincgan-gpu conda environment..."
+                conda activate fincgan-gpu
+                print_success "GPU environment activated"
+            elif conda env list | grep -q "fincgan"; then
+                print_info "Activating fincgan conda environment..."
+                conda activate fincgan
+                print_success "Environment activated"
+            else
+                print_warning "fincgan environment not found, using current environment"
+            fi
         fi
     fi
 

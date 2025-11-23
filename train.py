@@ -4,15 +4,6 @@
 
 import os
 
-# os.environ["CUDA_VISIBLE_DEVICES"] = "1"
-# os.environ["CUDA_VISIBLE_DEVICES"] = "0" -> GPU ID: 1 Quadro RTX A6000
-# os.environ["CUDA_VISIBLE_DEVICES"] = "1" -> GPU ID: 5 Quadro RTX A6000
-# os.environ["CUDA_VISIBLE_DEVICES"] = "2" -> GPU ID: 6 Quadro RTX A6000
-# os.environ["CUDA_VISIBLE_DEVICES"] = "3" -> GPU ID: 2 RTX 3090
-# os.environ["CUDA_VISIBLE_DEVICES"] = "4" -> GPU ID: 3 RTX 3090
-# os.environ["CUDA_VISIBLE_DEVICES"] = "5" -> GPU ID: 0 RTX 2080 Ti
-# os.environ["CUDA_VISIBLE_DEVICES"] = "6" -> GPU ID: 4 RTX 2080 Ti
-# os.environ["CUDA_VISIBLE_DEVICES"] = "7" -> GPU ID: 7 RTX 2080 Ti
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -192,6 +183,11 @@ for j in range(len(args.ratio)):
         # [G], _ = load_graphs("./graph/"+'music_graphsmote_0.5_pretrained.bin')
         # [G], _ = load_graphs("./graph/"+'music_gan_0.5.bin')
         # [G], _ = load_graphs("./graph/"+'music_gan_0.5_pretrained.bin')
+
+        # Move graph to the same device as the model
+        if cuda:
+            G = G.to(device)
+
         if args.verbose:
             logger.debug(f'Original Graph Information:\n{G}')
 
@@ -201,6 +197,8 @@ for j in range(len(args.ratio)):
         elif args.setting in ["oversampling","smote", "noise", 'graphsmote']:
             if os.path.exists(args.graph_dir + "music_instrument_" + args.setting + '_ratio_' + str(ratio) + '_seed_' + str(seed) + ".bin"):
                 [G], _ = load_graphs(args.graph_dir + "music_instrument_" + args.setting + '_ratio_' + str(ratio) + '_seed_' + str(seed) + ".bin")
+                if cuda:
+                    G = G.to(device)
 
             elif args.setting == "oversampling":
                 graph_name = f"music_instrument_{args.setting}_ratio_{ratio}_seed_{seed}.bin"
@@ -241,6 +239,8 @@ for j in range(len(args.ratio)):
             graph_name = f"music_instrument_{args.setting}_ratio_{ratio}_seed_0.bin"
             if os.path.exists(args.graph_dir + graph_name):
                 [G], _ = load_graphs(args.graph_dir + graph_name)
+                if cuda:
+                    G = G.to(device)
             else:
                 logger.info(f"Graph {graph_name} does not exist, creating...")
                 G = utils.gan(G, 0, ratio, args.uu, args.up, verbose=args.verbose)
@@ -271,7 +271,8 @@ for j in range(len(args.ratio)):
             node_dict[ntype] = len(node_dict)
         for etype in G.etypes:
             edge_dict[etype] = len(edge_dict)
-            G.edges[etype].data['id'] = torch.ones(G.number_of_edges(etype), dtype=torch.long) * edge_dict[etype]
+            edge_id_tensor = torch.ones(G.number_of_edges(etype), dtype=torch.long) * edge_dict[etype]
+            G.edges[etype].data['id'] = edge_id_tensor.to(device) if cuda else edge_id_tensor
 
         #  input feature
         vote_idx = [] if args.setting in ['noise', "gan", "graphsmote"] else [19, 20, 21, 22, 23, 24] # invalid features
