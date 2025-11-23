@@ -89,37 +89,3 @@ python3 -c "import dgl; print(f'DGL version: {dgl.__version__}')"
 # Check PyTorch version
 python3 -c "import torch; print(f'PyTorch version: {torch.__version__}')"
 ```
-
-## Common Installation Issues
-
-### Issue 1: CUDA Version Mismatch
-
-If you have a different CUDA version, adjust the PyTorch installation:
-
-```bash
-# For CUDA 10.2
-pip3 install torch torchvision torchaudio
-
-# For CUDA 11.6
-pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
-```
-
-### Issue 2: DGL Installation Fails
-
-Try installing from the official wheel repository:
-
-```bash
-pip install dgl -f https://data.dgl.ai/wheels/repo.html
-```
-
-### Issue 3: Missing Dependencies
-
-Install all dependencies at once:
-
-```bash
-pip install -r requirements.txt  # If requirements.txt exists
-```
-
----
-
-**Next Steps**: See [Dataset Information](dataset.md) or return to [Main README](../README.md)

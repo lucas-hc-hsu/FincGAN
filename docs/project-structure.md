@@ -35,8 +35,7 @@ fincgan/
 │   ├── stage2-node-generator.md
 │   ├── stage3-edge-generator.md
 │   ├── stage4-training.md
-│   ├── stage5-visualization.md
-│   └── troubleshooting.md
+│   └── stage5-visualization.md
 │
 ├── data/                        # Input data directory
 ├── graph/                       # Original graph data
@@ -101,7 +100,6 @@ Comprehensive guides and documentation:
 - **stage3-edge-generator.md**: Edge generator guide
 - **stage4-training.md**: Final training guide
 - **stage5-visualization.md**: Result visualization guide
-- **troubleshooting.md**: Common issues and solutions
 
 ### Input Data
 - **graph/**: Original datasets in DGL binary format

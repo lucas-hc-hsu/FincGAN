@@ -386,39 +386,3 @@ fincgan/
 └── tmp/                          # Temporary model checkpoints
     └── music_hgt_model_*.pt
 ```
-
----
-
-## Troubleshooting
-
-For detailed troubleshooting, see [Troubleshooting Guide](troubleshooting.md).
-
-### Common Issues
-
-1. **CUDA Out of Memory**: Use `--gpu_id -1` for CPU mode
-2. **Missing dependencies**: Run `pip install -r requirements.txt`
-3. **Permission denied**: Use `chmod +x run_fincgan.sh`
-4. **Poor performance**: Increase epochs, try different ratios
-
----
-
-## Next Steps
-
-After completing the workflow:
-
-1. **Analyze results**: Compare FincGAN with baselines
-2. **Experiment**: Try different parameters (ratios, thresholds, epochs)
-3. **Optimize**: Fine-tune for your specific use case
-4. **Deploy**: Use trained models for fraud detection
-
----
-
-**Related Documentation:**
-- [Stage I: Embedding](stage1-embedding.md)
-- [Stage II: Node Generator](stage2-node-generator.md)
-- [Stage III: Edge Generator](stage3-edge-generator.md)
-- [Stage IV: Training](stage4-training.md)
-- [Stage V: Visualization](stage5-visualization.md)
-- [Automation Guide](../AUTOMATION_GUIDE.md)
-- [Troubleshooting](troubleshooting.md)
-- [Main README](../README.md)

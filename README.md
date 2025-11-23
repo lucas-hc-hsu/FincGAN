@@ -103,7 +103,6 @@ Stage V: Visualization & Analysis
 
 ### Resources
 - [Project Structure](docs/project-structure.md)
-- [Troubleshooting](docs/troubleshooting.md)
 
 ---
 
@@ -131,4 +130,3 @@ fincgan/
 - [Installation →](docs/installation.md)
 - [Complete Workflow →](docs/workflow.md)
 - [Project Structure →](docs/project-structure.md)
-- [Troubleshooting →](docs/troubleshooting.md)
