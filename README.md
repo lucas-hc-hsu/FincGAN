@@ -126,23 +126,6 @@ fincgan/
 
 ---
 
-## Citation
-
-If you find this repository useful, please cite FincGAN with the following:
-
-```bibtex
-@INPROCEEDINGS{10448064,
-  author    = {Hsu, Hung Chun and Lin, Ting-Le and Wu, Bo-Jun and Hong, Ming-Yi and Lin, Che and Wang, Chih-Yu},
-  booktitle = {ICASSP 2024 - 2024 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
-  title     = {FincGAN: A Gan Framework of Imbalanced Node Classification on Heterogeneous Graph Neural Network},
-  year      = {2024},
-  pages     = {5750-5754},
-  doi       = {10.1109/ICASSP48485.2024.10448064}
-}
-```
-
----
-
 ## Quick Links
 
 - [Installation →](docs/installation.md)
