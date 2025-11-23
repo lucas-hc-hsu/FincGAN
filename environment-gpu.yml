@@ -1,0 +1,21 @@
+# FincGAN GPU Environment Configuration
+# For NVIDIA GPUs with CUDA 12.4+ support (tested on RTX 5090)
+#
+# Installation:
+#   conda env create -f environment-gpu.yml
+#   conda activate fincgan-gpu
+#   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+#   pip install dgl -f https://data.dgl.ai/wheels/torch-2.6/cu124/repo.html
+
+name: fincgan-gpu
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip
+  - numpy
+  - matplotlib
+  - pandas
+  - scikit-learn
+  - tqdm
+  - pytz

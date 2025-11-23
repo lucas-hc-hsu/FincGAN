@@ -28,11 +28,23 @@ chmod +x run_fincgan.sh
 
 ## Installation
 
+### CPU Version (PyTorch 1.11.0 + CUDA 11.3)
+
 ```bash
 # Run setup script (one command to install everything)
 chmod +x setup_env.sh
 ./setup_env.sh
 ```
+
+### GPU Version (PyTorch 2.6.0 + CUDA 12.4) - For RTX 5090 and newer GPUs
+
+```bash
+# Run GPU setup script
+chmod +x setup_env_gpu.sh
+./setup_env_gpu.sh
+```
+
+**Note**: The GPU version requires NVIDIA driver 550+ and supports newer GPUs like RTX 5090.
 
 **For manual setup and different CUDA versions, see [Installation Guide](docs/installation.md).**
 

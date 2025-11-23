@@ -79,10 +79,14 @@ if not os.path.exists(args.emb_dir):
     logger.info("Directory created successfully")
 
 
-# Use CPU for DGL CPU version compatibility
-cuda = False
-device = torch.device("cpu")
-logger.info(f"Using CPU for training (DGL CPU version)")
+# Configure device (GPU if available, otherwise CPU)
+cuda = torch.cuda.is_available() and args.gpu_id >= 0
+if cuda:
+    device = torch.device(f"cuda:{args.gpu_id}")
+    logger.info(f"Using GPU: {torch.cuda.get_device_name(args.gpu_id)} (cuda:{args.gpu_id})")
+else:
+    device = torch.device("cpu")
+    logger.info(f"Using CPU for training")
 
 
 def get_n_params(model):
