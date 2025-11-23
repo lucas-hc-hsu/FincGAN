@@ -83,7 +83,6 @@ Stage V: Visualization & Analysis
 5. [Stage V: Visualization](docs/stage5-visualization.md)
 
 ### Resources
-- [Evaluation Metrics](docs/metrics.md)
 - [Troubleshooting](docs/troubleshooting.md)
 
 ---

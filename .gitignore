@@ -101,6 +101,10 @@ Thumbs.db
 # Documentation builds
 docs/_build/
 site/
+docs/rtx5090-compatibility.md
+docs/TEST_REPORT.md
+docs/FINAL_SUMMARY.md
+docs/metrics.md
 
 # Coverage reports
 htmlcov/

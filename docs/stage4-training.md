@@ -394,6 +394,5 @@ After completing graph generation and training:
 **Related Documentation:**
 - [Stage III: Edge Generator](stage3-edge-generator.md)
 - [Stage V: Visualization](stage5-visualization.md)
-- [Evaluation Metrics](metrics.md)
 - [Complete Workflow](workflow.md)
 - [Main README](../README.md)
