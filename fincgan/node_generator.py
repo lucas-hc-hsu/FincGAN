@@ -61,6 +61,7 @@ parser.add_argument("--sample_interval", type=int, default=400, help="interval b
 parser.add_argument("--gan_verbose", type=int, default=0, help="set 1 to show training details of GAN, otherwise 0")
 parser.add_argument("--tsne_verbose", type=int, default=0, help="set 0, 1 or 2, provides additional details of tsne as visualizing synthetic data")
 parser.add_argument("--save_tsne_figure", type=bool, default=True, help="save the reulst of tsne as visualizing synthetic data")
+parser.add_argument('--dataset-name', type=str, default="amazon", help="name of the dataset (used for file naming)")
 
 ''' Use one of the following two lines when parser throws error '''
 # opt = parser.parse_args(args = [])
@@ -174,13 +175,13 @@ discriminator.apply(weights_init_normal)
 
 
 # Configure data loader
-[G], _ = load_graphs(opt.data_dir + "music_instrument_25.bin")
+[G], _ = load_graphs(opt.data_dir)
 train_mask = G.nodes['user'].data.pop('train_mask')
 train_idx = torch.nonzero(train_mask, as_tuple=False).squeeze()
 val_mask = G.nodes['user'].data.pop('val_mask')
 val_idx = torch.nonzero(val_mask, as_tuple=False).squeeze()
 labels = G.nodes['user'].data.pop('label')
-user_emb = torch.load(opt.emb_dir + 'music_hgt_user_emb.pt', map_location=torch.device('cpu'))
+user_emb = torch.load(opt.emb_dir + f'{opt.dataset_name}_hgt_user_emb.pt', map_location=torch.device('cpu'))
 user_emb = user_emb[train_idx, :]
 labels = labels[train_idx]
 
@@ -279,11 +280,11 @@ if not os.path.exists(opt.gan_dir):
         logger.info(f"completed.")
 
 
-torch.save(discriminator.state_dict(), opt.gan_dir + "music_D.pt")
-torch.save(generator.state_dict(), opt.gan_dir + "music_G.pt")
+torch.save(discriminator.state_dict(), opt.gan_dir + f"{opt.dataset_name}_D.pt")
+torch.save(generator.state_dict(), opt.gan_dir + f"{opt.dataset_name}_G.pt")
 logger.info(f"Node Generator of FincGAN, training completed.")
-logger.info(f"As music_D.pt, state dictionary of discriminator was successfully saved to: {opt.gan_dir}")
-logger.info(f"As music_G.pt, state dictionary of generator was successfully saved to: {opt.gan_dir}\n")
+logger.info(f"As {opt.dataset_name}_D.pt, state dictionary of discriminator was successfully saved to: {opt.gan_dir}")
+logger.info(f"As {opt.dataset_name}_G.pt, state dictionary of generator was successfully saved to: {opt.gan_dir}\n")
 
 
 logger.info(f"Visualizing synthetic result by t-SNE")

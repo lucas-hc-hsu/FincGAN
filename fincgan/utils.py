@@ -152,11 +152,11 @@ def smote(G, seed, ratio, verbose):
     return G_new
 
 
-def noise(G, seed, ratio, verbose):
+def noise(G, seed, ratio, verbose, dataset_name='amazon'):
     if verbose:
         logger.info("Starting graph transformation (noise)...")
     # load embedding
-    feat_product = torch.load('embed/music_hgt_product_emb.pt', map_location=torch.device('cpu'))
+    feat_product = torch.load(f'embed/{dataset_name}_hgt_product_emb.pt', map_location=torch.device('cpu'))
 
     # retrieve nodes and edges
     u_u_edge = [(u0.item(), u1.item()) for u0, u1 in zip(G.edges(etype='u-u')[0], G.edges(etype='u-u')[1])]
@@ -168,7 +168,7 @@ def noise(G, seed, ratio, verbose):
         u_p_edge.append((n0.item(), n1.item()))
         p_u_edge.append((n1.item(), n0.item()))
 
-    feat_user = torch.load('embed/music_hgt_user_emb.pt', map_location=torch.device('cpu'))
+    feat_user = torch.load(f'embed/{dataset_name}_hgt_user_emb.pt', map_location=torch.device('cpu'))
     train_mask = G.nodes['user'].data['train_mask']
     label = G.nodes['user'].data['label']
 
@@ -222,7 +222,7 @@ def noise(G, seed, ratio, verbose):
     return G_new
 
 
-def graphsmote(G, seed, ratio, uu_threshold, verbose=0):
+def graphsmote(G, seed, ratio, uu_threshold, verbose=0, dataset_name='amazon'):
     if verbose:
         logger.info("Starting graph transformation (GraphSMOTE)...")
     random.seed(seed)
@@ -235,8 +235,8 @@ def graphsmote(G, seed, ratio, uu_threshold, verbose=0):
     test_mask = G.nodes['user'].data.pop('test_mask')
     labels = G.nodes['user'].data.pop('label')
 
-    user_emb = torch.load('embed/music_hgt_user_emb.pt', map_location=torch.device('cpu'))
-    product_emb = torch.load('embed/music_hgt_product_emb.pt', map_location=torch.device('cpu'))
+    user_emb = torch.load(f'embed/{dataset_name}_hgt_user_emb.pt', map_location=torch.device('cpu'))
+    product_emb = torch.load(f'embed/{dataset_name}_hgt_product_emb.pt', map_location=torch.device('cpu'))
 
     user_size = user_emb.shape[0]
     product_size = product_emb.shape[0]
@@ -248,7 +248,7 @@ def graphsmote(G, seed, ratio, uu_threshold, verbose=0):
     uu_generator = Decoder(emb_dim=emb_dim, matrix_dim=256)
     up_generator = MLP(emb_dim*2, 1, 512, 4)
 
-    node_generator.load_state_dict(torch.load("generator/" + 'music_G.pt', map_location="cpu"))
+    node_generator.load_state_dict(torch.load(f"generator/{dataset_name}_G.pt", map_location="cpu"))
     uu_generator.load_state_dict(torch.load("generator/" + 'uu_generator.pt', map_location="cpu"))
     up_generator.load_state_dict(torch.load("generator/" + 'up_generator.pt', map_location="cpu"))
 
@@ -363,7 +363,7 @@ def graphsmote(G, seed, ratio, uu_threshold, verbose=0):
     return g
 
 
-def gan(G, seed, ratio, uu_threshold, up_threshold, verbose=0):
+def gan(G, seed, ratio, uu_threshold, up_threshold, verbose=0, dataset_name='amazon'):
     if verbose:
         logger.info("Starting graph transformation (FincGAN)...")
     random.seed(seed)
@@ -376,8 +376,8 @@ def gan(G, seed, ratio, uu_threshold, up_threshold, verbose=0):
     test_mask = G.nodes['user'].data.pop('test_mask')
     labels = G.nodes['user'].data.pop('label')
 
-    user_emb = torch.load('embed/music_hgt_user_emb.pt', map_location=torch.device('cpu'))
-    product_emb = torch.load('embed/music_hgt_product_emb.pt', map_location=torch.device('cpu'))
+    user_emb = torch.load(f'embed/{dataset_name}_hgt_user_emb.pt', map_location=torch.device('cpu'))
+    product_emb = torch.load(f'embed/{dataset_name}_hgt_product_emb.pt', map_location=torch.device('cpu'))
 
     user_size = user_emb.shape[0]
     product_size = product_emb.shape[0]
@@ -389,7 +389,7 @@ def gan(G, seed, ratio, uu_threshold, up_threshold, verbose=0):
     uu_generator = Decoder(emb_dim=emb_dim, matrix_dim=256)
     up_generator = MLP(emb_dim*2, 1, 512, 4)
 
-    node_generator.load_state_dict(torch.load("generator/" + 'music_G.pt', map_location="cpu"))
+    node_generator.load_state_dict(torch.load(f"generator/{dataset_name}_G.pt", map_location="cpu"))
     uu_generator.load_state_dict(torch.load("generator/" + 'uu_generator.pt', map_location="cpu"))
     up_generator.load_state_dict(torch.load("generator/" + 'up_generator.pt', map_location="cpu"))
 

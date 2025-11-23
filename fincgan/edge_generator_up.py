@@ -30,7 +30,7 @@ import numpy as np
 parser = argparse.ArgumentParser(description='Training U-P Edge Generator')
 parser.add_argument('--seed', type=int, default=0)
 parser.add_argument('--gpu_id', type=int, default=0, help="to train on which GPU")
-parser.add_argument('--data_dir', type=str, default="./graph/music_instrument_25.bin")
+parser.add_argument('--data_dir', type=str, default="./graph/amazon.bin")
 parser.add_argument('--emb_dir', type=str, default="./embed/")
 parser.add_argument('--tmp_dir', type=str, default="./tmp/")
 parser.add_argument('--edge_dir', type=str, default="./generator/")
@@ -41,6 +41,7 @@ parser.add_argument('--max_lr', type=float, default=0.001)
 parser.add_argument('--weight_decay', type=float, default=5e-4)
 parser.add_argument('--dropout', type=float, default=0.1)
 parser.add_argument('--edge_generator_verbose', type=int, default=1, help="set 1 to show training details of user-product edge generator, otherwise 0")
+parser.add_argument('--dataset-name', type=str, default="amazon", help="name of the dataset (used for file naming)")
 
 ''' Use one of the following two lines when parser throws error '''
 # args = parser.parse_args(args = [])
@@ -69,10 +70,10 @@ print(G)
 print("\n")
 
 # load embedding
-user_emb = torch.load(args.emb_dir + 'music_hgt_user_emb.pt', map_location = 'cpu')
+user_emb = torch.load(args.emb_dir + f'{args.dataset_name}_hgt_user_emb.pt', map_location = 'cpu')
 logger.info(f"completed.")
 
-product_emb = torch.load(args.emb_dir + 'music_hgt_product_emb.pt', map_location='cpu')
+product_emb = torch.load(args.emb_dir + f'{args.dataset_name}_hgt_product_emb.pt', map_location='cpu')
 logger.info(f"completed.")
 
 

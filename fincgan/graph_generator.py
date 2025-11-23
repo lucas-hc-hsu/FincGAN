@@ -15,7 +15,7 @@ import os
 import torch
 
 
-from fincgan.hgt_model import HGT, Generator, latent_dim, emb_dim
+from fincgan.hgt_model import HGT, Generator, Decoder, MLP, latent_dim, emb_dim
 from fincgan.logger import get_logger
 import argparse
 import numpy as np
@@ -30,12 +30,15 @@ from torch.autograd import Variable
 parser = argparse.ArgumentParser(description='FincGAN Multi Graph Generator respect to different ratio')
 parser.add_argument('--gpu_id', type=int, default=0)
 parser.add_argument('--seed', type=int, default=0)
-parser.add_argument('--data_dir', type=str, default="graph/music_instrument_25.bin")
+parser.add_argument('--data_dir', type=str, default="graph/amazon.bin")
 parser.add_argument('--graph_dir', type=str, default="graph/", help="directory to save generated graph during training")
 parser.add_argument('--ratio', nargs='+', type=float, default=[0.1007, 0.17, 0.23, 0.29, 0.34, 0.375, 0.41, 0.45, 0.47, 0.5, 0.52, 0.55]) # for test different threshold
 parser.add_argument('--up', type=float, default=0.99, help="threshold of user-product edge generator")
 parser.add_argument('--uu', type=float, default=0.91, help="threshold of user-user edge genertor")
 parser.add_argument('--verbose', type=int, default=0, help="set 1 to show training details as generating new graph, otherwise 0")
+parser.add_argument('--dataset-name', type=str, default="amazon", help="name of the dataset (used for file naming)")
+parser.add_argument('--emb_dir', type=str, default="./embed/", help="directory for embeddings")
+parser.add_argument('--gan_dir', type=str, default="./generator/", help="directory for generators")
 
 ''' If the error messages pop out during parser declaration, try another one.'''
 # args = parser.parse_args(args = [])
@@ -72,8 +75,8 @@ original_test_mask = G.nodes['user'].data.pop('test_mask')
 original_labels = G.nodes['user'].data.pop('label')
 
 
-user_emb = torch.load('embed/music_hgt_user_emb.pt', map_location=torch.device('cpu'))
-product_emb = torch.load('embed/music_hgt_product_emb.pt', map_location=torch.device('cpu'))
+user_emb = torch.load(args.emb_dir + f'{args.dataset_name}_hgt_user_emb.pt', map_location=torch.device('cpu'))
+product_emb = torch.load(args.emb_dir + f'{args.dataset_name}_hgt_product_emb.pt', map_location=torch.device('cpu'))
 
 user_size = user_emb.shape[0]
 product_size = product_emb.shape[0]
@@ -85,9 +88,9 @@ node_generator = Generator()
 uu_generator = Decoder(emb_dim=emb_dim, matrix_dim=256)
 up_generator = MLP(emb_dim*2, 1, 512, 4)
 
-node_generator.load_state_dict(torch.load("generator/" + 'music_G.pt', map_location="cpu"))
-uu_generator.load_state_dict(torch.load("generator/" + 'uu_generator.pt', map_location="cpu"))
-up_generator.load_state_dict(torch.load("generator/" + 'up_generator.pt', map_location="cpu"))
+node_generator.load_state_dict(torch.load(args.gan_dir + f"{args.dataset_name}_G.pt", map_location="cpu"))
+uu_generator.load_state_dict(torch.load(args.gan_dir + 'uu_generator.pt', map_location="cpu"))
+up_generator.load_state_dict(torch.load(args.gan_dir + 'up_generator.pt', map_location="cpu"))
 
 
 minor_idx = original_train_idx[(original_labels==1)[original_train_idx]]
@@ -103,9 +106,15 @@ for ratio in args.ratio:
 
 k_max = max(k_list)
 # print(f"k_max: {k_max}")
-new_emb = torch.zeros((k_max, emb_dim), dtype=torch.float)
-new_uu = torch.zeros((k_max, user_size), dtype=torch.float)
-new_up = torch.zeros((k_max, product_size), dtype=torch.float)
+
+# If k_max is negative or zero, no synthetic samples are needed
+if k_max <= 0:
+    logger.info(f"No synthetic samples needed (k_max={k_max}). Dataset is already balanced.")
+    k_max = 0
+
+new_emb = torch.zeros((max(k_max, 1), emb_dim), dtype=torch.float)  # At least 1 to avoid empty tensor
+new_uu = torch.zeros((max(k_max, 1), user_size), dtype=torch.float)
+new_up = torch.zeros((max(k_max, 1), product_size), dtype=torch.float)
 
 
 finish_cnt = 0
@@ -145,6 +154,19 @@ new_up[new_up < args.up] = 0
 
 for ratio, amount_of_new_nodes in zip(args.ratio, k_list):
     print(f"\namount_of_new_nodes: {amount_of_new_nodes}")
+
+    # Skip if no synthetic samples are needed for this ratio
+    if amount_of_new_nodes <= 0:
+        logger.info(f"Skipping ratio {ratio}: dataset already balanced (amount_of_new_nodes={amount_of_new_nodes})")
+        # Re-add the popped fields before saving
+        G.nodes['user'].data['train_mask'] = original_train_mask
+        G.nodes['user'].data['val_mask'] = original_val_mask
+        G.nodes['user'].data['test_mask'] = original_test_mask
+        G.nodes['user'].data['label'] = original_labels
+        graph_path = args.graph_dir + f"{args.dataset_name}_gan_ratio_" + str(ratio) + '_seed_'+str(args.seed)+'.bin'
+        save_graphs(graph_path, [G])
+        logger.info(f"Original graph saved to: {graph_path}")
+        continue
 
     local_new_uu = new_uu[:amount_of_new_nodes, :]
     local_new_up = new_up[:amount_of_new_nodes, :]
@@ -206,7 +228,7 @@ for ratio, amount_of_new_nodes in zip(args.ratio, k_list):
     g.nodes['product'].data['feature'] = feat_product.float()
 
     print(g)
-    graph_path = args.graph_dir + "music_instrument_gan_ratio_" + str(ratio) + '_seed_'+str(args.seed)+'.bin'
+    graph_path = args.graph_dir + f"{args.dataset_name}_gan_ratio_" + str(ratio) + '_seed_'+str(args.seed)+'.bin'
     save_graphs(graph_path, [g])
     logger.info(f"created graph successfully saved to : {graph_path}")
 logger.info(f"program ends.")

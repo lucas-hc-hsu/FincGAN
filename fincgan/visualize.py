@@ -9,7 +9,7 @@ import glob
 import os
 from fincgan.logger import get_logger
 
-def auto_plot_figure_3(result_dir = 'results/', save_fig=True):
+def auto_plot_figure_3(result_dir = 'results/', save_fig=True, save_dir='./figures/'):
     fig = plt.figure(figsize=(24, 16))
     MARKER_SIZE = 16
 
@@ -62,11 +62,15 @@ def auto_plot_figure_3(result_dir = 'results/', save_fig=True):
         ax.legend(fontsize=12)
         ax.set_title(target_metric, fontsize=16)
 
-    fig_path = "./figures/figure_3.png"
+    # Ensure save_dir ends with /
+    if not save_dir.endswith('/'):
+        save_dir += '/'
+
+    fig_path = save_dir + "figure_3.png"
     if save_fig:
-        if not os.path.exists("./figures/"):
-            os.makedirs("./figures/")
-            logger.info("directory ./figures/ created.")
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
+            logger.info(f"directory {save_dir} created.")
         plt.savefig(fig_path)
         logger.info(f"Figure saved to {fig_path}")
     logger.info("Program ends.")

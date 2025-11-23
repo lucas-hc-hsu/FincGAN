@@ -24,7 +24,7 @@ import sys
 parser = argparse.ArgumentParser(description='Training GNN on ogbn-products benchmark')
 parser.add_argument('--gpu_id', type=int, default=0)
 parser.add_argument('--seed', nargs="+", type=int, default=[0, 30])
-parser.add_argument('--data_dir', type=str, default="graph/music_instrument_25.bin", help="directory of original grpah data")
+parser.add_argument('--data_dir', type=str, default="graph/amazon.bin", help="directory of original grpah data")
 parser.add_argument('--graph_dir', type=str, default="graph/", help="directory to save generated graph during training")
 parser.add_argument('--tmp_dir', type=str, default="tmp/")
 parser.add_argument('--emb_dir', type=str, default="embed/")
@@ -40,6 +40,7 @@ parser.add_argument('--k', type=int, default=1)
 parser.add_argument('--ratio', nargs='+', type=float, default=[0.1007, 0.17, 0.23, 0.29, 0.34, 0.375, 0.41, 0.45, 0.47, 0.5, 0.52, 0.55])
 parser.add_argument('--verbose', type=int, default=0, help="set 1 to show training details as generating new graph, otherwise 0")
 parser.add_argument('--result_dir', type=str, default="results/", help="directory to save training result of each method during training")
+parser.add_argument('--dataset-name', type=str, default="amazon", help="name of the dataset (used for file naming)")
 
 args = parser.parse_args()
 
@@ -133,7 +134,7 @@ def train(model, G):
             best_val_acc = val_acc
             best_test_acc = test_acc
             patient = 0
-            torch.save(model.state_dict(), args.tmp_dir + 'music_hgt_model_' + args.setting + '_ratio_' + str(ratio) + '_seed_' + str(seed) + '.pt')
+            torch.save(model.state_dict(), args.tmp_dir + f'{args.dataset_name}_hgt_model_' + args.setting + '_ratio_' + str(ratio) + '_seed_' + str(seed) + '.pt')
         else:
             patient = patient + 1
 
@@ -152,7 +153,7 @@ def train(model, G):
             ))
 
 
-txt_path = args.result_dir + "music_hgt_model_" + args.setting + ".txt"
+txt_path = args.result_dir + f"{args.dataset_name}_hgt_model_" + args.setting + ".txt"
 logger.info(f"Training results will be saved to: {txt_path}")
 f = open(txt_path, "w")
 f.write(",".join(["method", "seed", "ratio", "prc", "roc", "f1", "precision", "recall", "acc\n"]))
@@ -184,13 +185,13 @@ for j in range(len(args.ratio)):
         if args.setting in ['origin', 'embedding']:
             pass
         elif args.setting in ["oversampling","smote", "noise", 'graphsmote']:
-            if os.path.exists(args.graph_dir + "music_instrument_" + args.setting + '_ratio_' + str(ratio) + '_seed_' + str(seed) + ".bin"):
-                [G], _ = load_graphs(args.graph_dir + "music_instrument_" + args.setting + '_ratio_' + str(ratio) + '_seed_' + str(seed) + ".bin")
+            if os.path.exists(args.graph_dir + f"{args.dataset_name}_" + args.setting + '_ratio_' + str(ratio) + '_seed_' + str(seed) + ".bin"):
+                [G], _ = load_graphs(args.graph_dir + f"{args.dataset_name}_" + args.setting + '_ratio_' + str(ratio) + '_seed_' + str(seed) + ".bin")
                 if cuda:
                     G = G.to(device)
 
             elif args.setting == "oversampling":
-                graph_name = f"music_instrument_{args.setting}_ratio_{ratio}_seed_{seed}.bin"
+                graph_name = f"{args.dataset_name}_{args.setting}_ratio_{ratio}_seed_{seed}.bin"
                 logger.info(f"Graph {graph_name} does not exist, creating...")
                 G = utils.oversampling(G, seed, ratio, verbose=args.verbose)
                 logger.info(f"Graph {graph_name} created successfully")
@@ -198,7 +199,7 @@ for j in range(len(args.ratio)):
                 logger.info(f"Graph saved to: {args.graph_dir}")
 
             elif args.setting == "smote":
-                graph_name = f"music_instrument_{args.setting}_ratio_{ratio}_seed_{seed}.bin"
+                graph_name = f"{args.dataset_name}_{args.setting}_ratio_{ratio}_seed_{seed}.bin"
                 logger.info(f"Graph {graph_name} does not exist, creating...")
                 G = utils.smote(G, seed, ratio, verbose=args.verbose)
                 logger.info(f"Graph {graph_name} created successfully")
@@ -206,17 +207,17 @@ for j in range(len(args.ratio)):
                 logger.info(f"Graph saved to: {args.graph_dir}")
 
             elif args.setting == "noise":
-                graph_name = f"music_instrument_{args.setting}_ratio_{ratio}_seed_{seed}.bin"
+                graph_name = f"{args.dataset_name}_{args.setting}_ratio_{ratio}_seed_{seed}.bin"
                 logger.info(f"Graph {graph_name} does not exist, creating...")
-                G = utils.noise(G, seed, ratio, verbose=args.verbose)
+                G = utils.noise(G, seed, ratio, verbose=args.verbose, dataset_name=args.dataset_name)
                 logger.info(f"Graph {graph_name} created successfully")
                 save_graphs(args.graph_dir + graph_name, [G])
                 logger.info(f"Graph saved to: {args.graph_dir}")
 
             elif args.setting == "graphsmote":
-                graph_name = f"music_instrument_{args.setting}_ratio_{ratio}_seed_{seed}.bin"
+                graph_name = f"{args.dataset_name}_{args.setting}_ratio_{ratio}_seed_{seed}.bin"
                 logger.info(f"Graph {graph_name} does not exist, creating...")
-                G = utils.graphsmote(G, seed, ratio, args.uu, verbose=args.verbose)
+                G = utils.graphsmote(G, seed, ratio, args.uu, verbose=args.verbose, dataset_name=args.dataset_name)
                 logger.info(f"Graph {graph_name} created successfully")
                 save_graphs(args.graph_dir + graph_name, [G])
                 logger.info(f"Graph saved to: {args.graph_dir}")
@@ -225,14 +226,14 @@ for j in range(len(args.ratio)):
                 logger.debug(f'Transformed Graph Information:\n{G}')
 
         elif args.setting == "gan":
-            graph_name = f"music_instrument_{args.setting}_ratio_{ratio}_seed_0.bin"
+            graph_name = f"{args.dataset_name}_{args.setting}_ratio_{ratio}_seed_0.bin"
             if os.path.exists(args.graph_dir + graph_name):
                 [G], _ = load_graphs(args.graph_dir + graph_name)
                 if cuda:
                     G = G.to(device)
             else:
                 logger.info(f"Graph {graph_name} does not exist, creating...")
-                G = utils.gan(G, 0, ratio, args.uu, args.up, verbose=args.verbose)
+                G = utils.gan(G, 0, ratio, args.uu, args.up, verbose=args.verbose, dataset_name=args.dataset_name)
                 logger.info(f"Graph {graph_name} created successfully")
                 save_graphs(args.graph_dir + graph_name, [G])
                 logger.info(f"Graph saved to: {args.graph_dir}")
@@ -251,8 +252,9 @@ for j in range(len(args.ratio)):
         val_idx = torch.nonzero(val_mask, as_tuple=False).squeeze()
         test_idx = torch.nonzero(test_mask, as_tuple=False).squeeze()
 
-        # extract features
-        features = G.nodes[args.target].data['feature']
+        # extract features (support both 'feature' and 'feat' keys for different datasets)
+        feature_key = 'feature' if 'feature' in G.nodes[args.target].data else 'feat'
+        features = G.nodes[args.target].data[feature_key]
 
         node_dict = {}
         edge_dict = {}
@@ -269,7 +271,9 @@ for j in range(len(args.ratio)):
 
 
         for ntype in G.ntypes:
-            emb = G.nodes[ntype].data.pop('feature')
+            # Support both 'feature' and 'feat' keys for different datasets
+            feature_key = 'feature' if 'feature' in G.nodes[ntype].data else 'feat'
+            emb = G.nodes[ntype].data.pop(feature_key)
             emb = nn.Parameter(emb[:, use_idx], requires_grad = False)
             G.nodes[ntype].data['inp'] = emb
 
@@ -300,7 +304,7 @@ for j in range(len(args.ratio)):
             logger.debug('='*70)
             logger.debug('Testing')
             logger.debug('='*70)
-        model.load_state_dict(torch.load(args.tmp_dir + 'music_hgt_model_' + args.setting + '_ratio_' + str(ratio) + '_seed_' + str(seed) + '.pt'))
+        model.load_state_dict(torch.load(args.tmp_dir + f'{args.dataset_name}_hgt_model_' + args.setting + '_ratio_' + str(ratio) + '_seed_' + str(seed) + '.pt'))
         model.eval()
         logits = model(G, args.target)
         logits = torch.sigmoid(logits)
@@ -328,18 +332,18 @@ for j in range(len(args.ratio)):
         print("ACC: {:.4f}".format(accuracy))
 
 
-        f = open(args.result_dir + "music_hgt_model_" + args.setting + ".txt", "a")
+        f = open(args.result_dir + f"{args.dataset_name}_hgt_model_" + args.setting + ".txt", "a")
         f.write("{},{},{:.4f},{:.4f},{:.4f},{:.4f},{:.4f},{:.4f},{:.4f}\n".format(args.setting, seed, percent[j], prc, roc, f1, precision, rc, accuracy))
         f.close()
 
         if (args.setting == 'embedding') and best_emb_score < roc:
             emb = model.get_emb(G)
-            torch.save(emb['user'], args.emb_dir + 'music_hgt_user_emb.pt')
-            torch.save(emb['product'], args.emb_dir + 'music_hgt_product_emb.pt')
+            torch.save(emb['user'], args.emb_dir + f'{args.dataset_name}_hgt_user_emb.pt')
+            torch.save(emb['product'], args.emb_dir + f'{args.dataset_name}_hgt_product_emb.pt')
             best_emb_score = roc
     if (args.setting == 'embedding'):
-        logger.info(f"User embeddings saved to: {args.emb_dir}music_hgt_user_emb.pt")
-        logger.info(f"Product embeddings saved to: {args.emb_dir}music_hgt_product_emb.pt")
+        logger.info(f"User embeddings saved to: {args.emb_dir}{args.dataset_name}_hgt_user_emb.pt")
+        logger.info(f"Product embeddings saved to: {args.emb_dir}{args.dataset_name}_hgt_product_emb.pt")
     logger.info("Training completed")
 
 
