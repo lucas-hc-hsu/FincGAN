@@ -28,6 +28,8 @@ MANIFEST
 *.pth
 *.ckpt
 *.bin
+!graph/amazon.bin
+!graph/yelp.bin
 *.safetensors
 
 # Generated Data and Outputs
@@ -137,3 +139,4 @@ runs/
 
 # Archive folder
 archive/
+graph/yelp.bin:Zone.Identifier
